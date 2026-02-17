@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Visor de Excel (.xlsx)</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f5f7fb;
+        --card: #ffffff;
+        --text: #1f2937;
+        --muted: #6b7280;
+        --border: #d1d5db;
+        --primary: #2563eb;
+        --danger-bg: #fee2e2;
+        --danger-text: #991b1b;
+      }
+
+      body {
+        margin: 0;
+        font-family: Inter, Arial, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+
+      .container {
+        max-width: 960px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+      }
+
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 1.25rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      }
+
+      h1 {
+        margin-top: 0;
+        margin-bottom: 0.5rem;
+        font-size: 1.5rem;
+      }
+
+      p {
+        margin-top: 0;
+        color: var(--muted);
+      }
+
+      form {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+        align-items: center;
+        margin-bottom: 1rem;
+      }
+
+      input[type="file"] {
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 0.45rem;
+        background: #fff;
+      }
+
+      button {
+        border: none;
+        border-radius: 8px;
+        padding: 0.55rem 1rem;
+        background: var(--primary);
+        color: #fff;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .error {
+        background: var(--danger-bg);
+        color: var(--danger-text);
+        border-radius: 8px;
+        padding: 0.75rem;
+        margin-bottom: 1rem;
+      }
+
+      .table-wrapper {
+        overflow-x: auto;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 500px;
+      }
+
+      th,
+      td {
+        padding: 0.6rem;
+        border-bottom: 1px solid #e5e7eb;
+        text-align: left;
+        white-space: nowrap;
+      }
+
+      th {
+        background: #f3f4f6;
+        font-size: 0.92rem;
+      }
+
+      .meta {
+        margin-bottom: 0.75rem;
+        font-size: 0.9rem;
+        color: var(--muted);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="card">
+        <h1>Cargar archivo Excel</h1>
+        <p>Sube un archivo <strong>.xlsx</strong> para visualizar su contenido en una tabla.</p>
+
+        <form action="/upload" method="post" enctype="multipart/form-data">
+          <input type="file" name="file" accept=".xlsx" required />
+          <button type="submit">Subir y mostrar</button>
+        </form>
+
+        {% if error %}
+        <div class="error">{{ error }}</div>
+        {% endif %}
+
+        {% if headers %}
+        <div class="meta">
+          Archivo: <strong>{{ filename }}</strong> · Filas mostradas: <strong>{{ rows|length }}</strong>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                {% for header in headers %}
+                <th>{{ header }}</th>
+                {% endfor %}
+              </tr>
+            </thead>
+            <tbody>
+              {% for row in rows %}
+              <tr>
+                {% for cell in row %}
+                <td>{{ cell }}</td>
+                {% endfor %}
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </body>
+</html>
